@@ -6,7 +6,7 @@ import { S3Service } from './s3.service';
 
 @Module({})
 export class AwsModule {
-  register({ awsOptions, optInProviders = { s3: true } }: AwsModuleOptions): DynamicModule {
+  static register({ awsOptions, optInProviders = { s3: true } }: AwsModuleOptions): DynamicModule {
     if (awsOptions) {
       if (Object.values(awsOptions).filter((c) => c).length !== 2) {
         throw new Error('accessKeyId and/or secretKey cannot be empty strings');
