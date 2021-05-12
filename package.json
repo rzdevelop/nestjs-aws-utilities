@@ -24,8 +24,7 @@
   },
   "keywords": [
     "nestjs",
-    "typeorm",
-    "cqrs"
+    "aws"
   ],
   "license": "MIT",
   "devDependencies": {
