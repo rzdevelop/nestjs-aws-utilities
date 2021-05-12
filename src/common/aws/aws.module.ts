@@ -1,6 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { CustomLoggerModule } from 'nestjs-utilities';
-import { AwsModuleOptions, AWS_OPTIONS } from './aws.interface';
+import { CustomLogger, CustomLoggerModule } from 'nestjs-utilities';
+import { AwsModuleOptions } from './aws.interface';
 
 import { S3Service } from './s3.service';
 
@@ -12,15 +12,20 @@ export class AwsModule {
         throw new Error('accessKeyId and/or secretKey cannot be empty strings');
       }
     }
+
     const module: DynamicModule = {
       module: AwsModule,
       imports: [CustomLoggerModule.register()],
-      providers: [{ provide: AWS_OPTIONS, useValue: awsOptions }],
+      providers: [],
       exports: [],
     };
 
     if (optInProviders.s3) {
-      module.providers?.push(S3Service);
+      module.providers?.push({
+        provide: S3Service,
+        useFactory: (logger: CustomLogger) => new S3Service(logger, awsOptions),
+        inject: [CustomLogger],
+      });
       module.exports?.push(S3Service);
     }
 

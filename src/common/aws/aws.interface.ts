@@ -1,7 +1,12 @@
 export interface AwsOptions {
   accessKeyId?: string;
-  secretKey?: string;
+  secretAccessKey?: string;
   region?: string;
+  localstack?: LocalstackOptions;
+}
+
+export interface LocalstackOptions {
+  endpoint?: string;
 }
 
 export interface AwsModuleOptions {
@@ -10,5 +15,3 @@ export interface AwsModuleOptions {
     s3?: boolean;
   };
 }
-
-export const AWS_OPTIONS = 'AWS_OPTIONS';
