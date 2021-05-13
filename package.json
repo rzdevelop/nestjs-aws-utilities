@@ -24,7 +24,8 @@
   },
   "keywords": [
     "nestjs",
-    "aws"
+    "aws",
+    "aws-sdk"
   ],
   "license": "MIT",
   "devDependencies": {
@@ -62,7 +63,7 @@
   "peerDependencies": {
     "@nestjs/common": "^7.6.15",
     "@nestjs/core": "^7.6.15",
-    "nestjs-utilities": "^0.1.6",
+    "nestjs-utilities": "^0.1.21",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.0.0"
   }
