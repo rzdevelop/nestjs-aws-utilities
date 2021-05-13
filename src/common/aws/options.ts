@@ -4,7 +4,7 @@ import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 import { AwsOptions } from './aws.interface';
 
 export class OptionsFactory {
-  static create(awsOptions: AwsOptions = {}) {
+  static create(awsOptions: AwsOptions = {}): ServiceConfigurationOptions {
     const { localstack, accessKeyId = '', secretAccessKey = '', region } = awsOptions;
     const options: ServiceConfigurationOptions = {
       signatureVersion: 'v4',
