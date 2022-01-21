@@ -9,6 +9,6 @@
     "strictPropertyInitialization": false,
     "esModuleInterop": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "**/__tests__/*"]
+  "include": ["src", "src/aws"],
+  "exclude": ["node_modules", "lib", "**/tests/*"]
 }
