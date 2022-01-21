@@ -1,0 +1,42 @@
+name: Report Coverage
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - name: Set Variables
+        run: |
+          sudo apt-get install jq
+          npm test -- --coverageReporters="json-summary"
+          SUMMARY="$(cat coverage/coverage-summary.json | jq '.total.lines.pct')"
+          echo $SUMMARY
+          COLOR=$(if [[ $SUMMARY -lt 33 ]]; then echo "red"; elif [[ $SUMMARY -lt 66 ]]; then echo "yellow"; else echo "green"; fi)
+          echo $COLOR
+          echo "COVERAGE=$(echo ${SUMMARY})" >> $GITHUB_ENV
+          echo "COLOR=$(echo ${COLOR})" >> $GITHUB_ENV
+          REF=${{ github.ref }}
+          echo "github.ref: $REF"
+          IFS='/' read -ra PATHS <<< "$REF"
+          BRANCH_NAME="${PATHS[1]}_${PATHS[2]}"
+          echo $BRANCH_NAME
+          echo "BRANCH=$(echo ${BRANCH_NAME})" >> $GITHUB_ENV
+      - name: Create the Badge
+        uses: schneegans/dynamic-badges-action@v1.0.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: 2cf517d75b119e74d2c3b7feedbcba7e
+          filename: nestjs-aws-utilities__${{ env.BRANCH }}.json
+          label: Test Coverage
+          message: ${{ env.COVERAGE }}
+          color: ${{ env.COLOR }}
+          namedLogo: jest
