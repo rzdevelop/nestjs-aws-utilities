@@ -1,8 +1,9 @@
-import * as AWS from 'aws-sdk';
+import { AWSError, S3 } from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
-import { CustomLogger } from 'nestjs-utilities';
+import { PinoLogger } from 'nestjs-pino';
 
 import { Injectable } from '@nestjs/common';
+
 import { AwsOptions } from './aws.interface';
 import { OptionsFactory } from './options';
 
@@ -10,12 +11,12 @@ import { OptionsFactory } from './options';
 export class S3Service {
   private s3: AWS.S3;
 
-  constructor(private readonly logger: CustomLogger, awsOptions?: AwsOptions) {
+  constructor(private readonly logger: PinoLogger, awsOptions?: AwsOptions) {
     this.logger.setContext(S3Service.name);
 
     const options = OptionsFactory.create(awsOptions);
 
-    this.s3 = new AWS.S3(options);
+    this.s3 = new S3(options);
   }
 
   public async getObject(
@@ -61,7 +62,8 @@ export class S3Service {
       .promise()
       .then(
         () => true,
-        (err) => {
+        (e) => {
+          const err = e as AWSError;
           if (err.code === 'NotFound') {
             return false;
           }

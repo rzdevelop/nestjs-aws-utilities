@@ -1,6 +1,8 @@
 export interface AwsOptions {
-  accessKeyId?: string;
-  secretAccessKey?: string;
+  credentials?: {
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
   region?: string;
   localstack?: LocalstackOptions;
 }

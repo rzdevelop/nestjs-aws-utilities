@@ -5,7 +5,8 @@ import { AwsOptions } from './aws.interface';
 
 export class OptionsFactory {
   static create(awsOptions: AwsOptions = {}): ServiceConfigurationOptions {
-    const { localstack, accessKeyId = '', secretAccessKey = '', region } = awsOptions;
+    const { localstack, credentials, region } = awsOptions;
+
     const options: ServiceConfigurationOptions = {
       signatureVersion: 'v4',
       region: region || 'us-east-1',
@@ -18,10 +19,10 @@ export class OptionsFactory {
         secretAccessKey: 'SECRET',
       });
       options.s3ForcePathStyle = true;
-    } else if (accessKeyId && secretAccessKey) {
+    } else if (credentials) {
       options.credentials = new AWS.Credentials({
-        accessKeyId,
-        secretAccessKey,
+        accessKeyId: credentials.accessKeyId,
+        secretAccessKey: credentials.secretAccessKey,
       });
     }
 
