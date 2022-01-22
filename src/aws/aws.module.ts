@@ -1,8 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { PinoLogger } from 'nestjs-pino';
-import { AwsOptions } from '.';
-import { AwsModuleOptions } from './aws.interface';
 
+import { AwsOptions } from './';
+import { AwsModuleOptions } from './aws.interface';
 import { S3Service } from './s3.service';
 
 const validateAwsCredentials = (credentials: AwsOptions['credentials']): void => {
@@ -28,8 +27,8 @@ export class AwsModule {
     if (optInProviders?.s3) {
       module.providers?.push({
         provide: S3Service,
-        useFactory: (logger: PinoLogger) => new S3Service(logger, awsOptions),
-        inject: [PinoLogger],
+        useFactory: () => new S3Service(awsOptions),
+        inject: [],
       });
       module.exports?.push(S3Service);
     }

@@ -1,6 +1,5 @@
 import { AWSError, S3 } from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
-import { PinoLogger } from 'nestjs-pino';
 
 import { Injectable } from '@nestjs/common';
 
@@ -9,11 +8,9 @@ import { OptionsFactory } from './options';
 
 @Injectable()
 export class S3Service {
-  private s3: AWS.S3;
+  protected s3: AWS.S3;
 
-  constructor(private readonly logger: PinoLogger, awsOptions?: AwsOptions) {
-    this.logger.setContext(S3Service.name);
-
+  constructor(awsOptions?: AwsOptions) {
     const options = OptionsFactory.create(awsOptions);
 
     this.s3 = new S3(options);
