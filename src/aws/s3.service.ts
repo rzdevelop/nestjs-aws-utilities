@@ -5,10 +5,24 @@ import { Injectable } from '@nestjs/common';
 
 import { AwsOptions } from './aws.interface';
 import { OptionsFactory } from './options';
+import {
+  CopyObjectOutput,
+  CopyObjectRequest,
+  DeleteObjectOutput,
+  DeleteObjectRequest,
+  GetObjectOutput,
+  GetObjectRequest,
+  HeadObjectRequest,
+  ListObjectsV2Output,
+  ListObjectsV2Request,
+  ObjectList,
+  PutObjectOutput,
+  PutObjectRequest,
+} from 'aws-sdk/clients/s3';
 
 @Injectable()
 export class S3Service {
-  protected s3: AWS.S3;
+  protected s3: S3;
 
   constructor(awsOptions?: AwsOptions) {
     const options = OptionsFactory.create(awsOptions);
@@ -16,28 +30,22 @@ export class S3Service {
     this.s3 = new S3(options);
   }
 
-  public async getObject(
-    params: AWS.S3.GetObjectRequest,
-  ): Promise<PromiseResult<AWS.S3.GetObjectOutput, AWS.AWSError>> {
+  public async getObject(params: GetObjectRequest): Promise<PromiseResult<GetObjectOutput, AWSError>> {
     return this.s3.getObject(params).promise();
   }
 
-  public async deleteFile(
-    params: AWS.S3.DeleteObjectRequest,
-  ): Promise<PromiseResult<AWS.S3.DeleteObjectOutput, AWS.AWSError>> {
+  public async deleteFile(params: DeleteObjectRequest): Promise<PromiseResult<DeleteObjectOutput, AWSError>> {
     return this.s3.deleteObject(params).promise();
   }
 
-  public async putObject(
-    params: AWS.S3.PutObjectRequest,
-  ): Promise<PromiseResult<AWS.S3.PutObjectOutput, AWS.AWSError>> {
+  public async putObject(params: PutObjectRequest): Promise<PromiseResult<PutObjectOutput, AWSError>> {
     return this.s3.deleteObject(params).promise();
   }
 
-  public async listAllObject(initialParams: AWS.S3.ListObjectsV2Request): Promise<AWS.S3.ObjectList> {
-    const params: AWS.S3.ListObjectsV2Request = { ...initialParams };
-    let content: AWS.S3.ObjectList = [];
-    let response: PromiseResult<AWS.S3.ListObjectsV2Output, AWS.AWSError>;
+  public async listAllObject(initialParams: ListObjectsV2Request): Promise<ObjectList> {
+    const params: ListObjectsV2Request = { ...initialParams };
+    let content: ObjectList = [];
+    let response: PromiseResult<ListObjectsV2Output, AWSError>;
     do {
       response = await this.s3.listObjectsV2(params).promise();
       content = content.concat(response.Contents || []);
@@ -47,13 +55,11 @@ export class S3Service {
     return content;
   }
 
-  public async copyObject(
-    params: AWS.S3.CopyObjectRequest,
-  ): Promise<PromiseResult<AWS.S3.CopyObjectOutput, AWS.AWSError>> {
+  public async copyObject(params: CopyObjectRequest): Promise<PromiseResult<CopyObjectOutput, AWSError>> {
     return this.s3.copyObject(params).promise();
   }
 
-  public async exists(params: AWS.S3.HeadObjectRequest): Promise<boolean> {
+  public async exists(params: HeadObjectRequest): Promise<boolean> {
     return this.s3
       .headObject(params)
       .promise()
